@@ -23,6 +23,11 @@
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
 
 <!--        DATABASE    -->
         <dependency>

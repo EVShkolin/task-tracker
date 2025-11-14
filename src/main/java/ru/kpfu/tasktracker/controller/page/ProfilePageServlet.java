@@ -1,0 +1,31 @@
+package ru.kpfu.tasktracker.controller.page;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import ru.kpfu.tasktracker.dto.user.UserResponseDto;
+import ru.kpfu.tasktracker.service.UserService;
+
+import java.io.IOException;
+
+@WebServlet("/profile")
+public class ProfilePageServlet extends HttpServlet {
+
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        this.userService = (UserService) getServletContext().getAttribute("userService");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = (String) req.getAttribute("username");
+        UserResponseDto userDto = userService.findByUsername(username);
+        req.setAttribute("user", userDto);
+        req.getRequestDispatcher("/profile.jsp").forward(req, resp);
+    }
+
+}

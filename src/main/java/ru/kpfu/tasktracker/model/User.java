@@ -1,9 +1,6 @@
 package ru.kpfu.tasktracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User {
 
     private Long id;
@@ -20,9 +18,9 @@ public class User {
 
     private String passwordHash;
 
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
-    private boolean isActive;
+    private Boolean isActive;
 
     private Instant registeredAt;
 

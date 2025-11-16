@@ -24,6 +24,7 @@ public class UserRepository {
             return rs.next() ?
                     Optional.of(ResultSetConverter.convertToUser(rs)) : Optional.empty();
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -37,6 +38,7 @@ public class UserRepository {
             return rs.next() ?
                     Optional.of(ResultSetConverter.convertToUser(rs)) : Optional.empty();
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -48,6 +50,7 @@ public class UserRepository {
             ps.setString(1, username);
             return ps.executeQuery().next();
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -58,13 +61,14 @@ public class UserRepository {
 
     private User insert(User user) {
         String query = """
-                INSERT INTO users (username, password_hash)
-                VALUES (?, ?)
+                INSERT INTO users (username, password_hash, registered_at)
+                VALUES (?, ?, ?)
                 """;
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPasswordHash());
+            ps.setTimestamp(3, Timestamp.from(user.getRegisteredAt()));
             ps.executeUpdate();
 
             ResultSet generatedKeys = ps.getGeneratedKeys();
@@ -72,6 +76,7 @@ public class UserRepository {
             user.setId(generatedKeys.getLong("id"));
             return user;
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -86,7 +91,7 @@ public class UserRepository {
             ps.executeUpdate();
             return user;
         } catch (SQLException e) {
-            log.debug(e.getMessage());
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -98,6 +103,7 @@ public class UserRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -109,6 +115,7 @@ public class UserRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
+            log.info(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

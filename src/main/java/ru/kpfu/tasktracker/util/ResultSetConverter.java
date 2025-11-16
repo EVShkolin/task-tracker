@@ -1,5 +1,6 @@
 package ru.kpfu.tasktracker.util;
 
+import ru.kpfu.tasktracker.model.Project;
 import ru.kpfu.tasktracker.model.User;
 
 import java.sql.ResultSet;
@@ -16,6 +17,17 @@ public class ResultSetConverter {
                 rs.getBoolean("is_admin"),
                 rs.getBoolean("is_active"),
                 rs.getTimestamp("registered_at").toInstant(),
+                new ArrayList<>()
+        );
+    }
+
+    public static Project convertToProject(ResultSet rs) throws SQLException {
+        return new Project(
+                rs.getLong("id"),
+                rs.getString("title"),
+                rs.getString("description"),
+                rs.getTimestamp("created_at").toInstant(),
+                new ArrayList<>(),
                 new ArrayList<>()
         );
     }

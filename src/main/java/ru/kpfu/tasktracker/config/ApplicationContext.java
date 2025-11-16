@@ -8,9 +8,12 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
+import ru.kpfu.tasktracker.mapper.ProjectMapper;
 import ru.kpfu.tasktracker.mapper.UserMapper;
+import ru.kpfu.tasktracker.repository.ProjectRepository;
 import ru.kpfu.tasktracker.repository.UserRepository;
 import ru.kpfu.tasktracker.security.BCryptPasswordEncoder;
+import ru.kpfu.tasktracker.service.ProjectService;
 import ru.kpfu.tasktracker.service.UserService;
 
 import javax.sql.DataSource;
@@ -26,6 +29,7 @@ public class ApplicationContext implements ServletContextListener {
         ServletContext context = sce.getServletContext();
         addCommonDependenciesToContext(context);
         addUserDependenciesToContext(context);
+        addProjectDependenciesToContext(context);
         log.info("Application context initialized");
     }
 
@@ -43,6 +47,13 @@ public class ApplicationContext implements ServletContextListener {
 
         UserValidator userValidator = new UserValidator();
         context.setAttribute("userValidator", userValidator);
+    }
+
+    private void addProjectDependenciesToContext(ServletContext context) {
+        ProjectRepository projectRepository = new ProjectRepository(dataSource);
+        ProjectMapper projectMapper = new ProjectMapper();
+        ProjectService projectService = new ProjectService(projectRepository, projectMapper);
+        context.setAttribute("projectService", projectService);
     }
 
     private DataSource getDataSource() {

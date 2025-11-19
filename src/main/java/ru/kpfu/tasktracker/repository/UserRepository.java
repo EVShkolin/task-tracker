@@ -24,7 +24,7 @@ public class UserRepository {
             return rs.next() ?
                     Optional.of(ResultSetConverter.convertToUser(rs)) : Optional.empty();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -38,7 +38,7 @@ public class UserRepository {
             return rs.next() ?
                     Optional.of(ResultSetConverter.convertToUser(rs)) : Optional.empty();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -50,7 +50,7 @@ public class UserRepository {
             ps.setString(1, username);
             return ps.executeQuery().next();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -76,7 +76,7 @@ public class UserRepository {
             user.setId(generatedKeys.getLong("id"));
             return user;
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public class UserRepository {
             ps.executeUpdate();
             return user;
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -103,7 +103,7 @@ public class UserRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -115,7 +115,7 @@ public class UserRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

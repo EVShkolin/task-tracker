@@ -16,5 +16,23 @@
   <p>
     <c:out value="${project.description}"></c:out>
   </p>
+  <br>
+  <div class="members">
+    <c:choose>
+      <c:when test="${empty project.members}">
+        <p>No members</p>
+      </c:when>
+      <c:otherwise>
+        <h5>Members:</h5>
+        <c:forEach items="${project.members}" var="member">
+          <div id="member_${member.id}" class="member">
+            <c:out value="${member.username}"></c:out>
+            <c:out value="${member.role}"></c:out>
+          </div>
+        </c:forEach>
+      </c:otherwise>
+    </c:choose>
+  </div>
+
 </body>
 </html>

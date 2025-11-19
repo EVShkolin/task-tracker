@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.dto.user.UserCreateDto;
-import ru.kpfu.tasktracker.dto.user.UserResponseDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.security.JwtProvider;
 import ru.kpfu.tasktracker.service.UserService;
 
@@ -37,7 +37,7 @@ public class RegisterPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserCreateDto dto = new UserCreateDto(req.getParameter("username"), req.getParameter("password"));
         userValidator.validateNewUser(dto);
-        UserResponseDto user = userService.save(dto);
+        UserProfileDto user = userService.save(dto);
 
         String token = JwtProvider.generateToken(user.username());
         Cookie cookie = new Cookie("jwt", token);

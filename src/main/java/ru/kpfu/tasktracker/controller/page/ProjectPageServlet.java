@@ -10,7 +10,7 @@ import ru.kpfu.tasktracker.service.ProjectService;
 
 import java.io.IOException;
 
-@WebServlet("/project/*")
+@WebServlet("/projects/*")
 public class ProjectPageServlet extends HttpServlet {
 
     private ProjectService projectService;

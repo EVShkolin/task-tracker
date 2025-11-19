@@ -24,7 +24,7 @@ public class ProjectRepository {
             return rs.next() ? Optional.of(ResultSetConverter.convertToProject(rs)) :
                     Optional.empty();
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -34,6 +34,7 @@ public class ProjectRepository {
     }
 
     private Project insert(Project project) {
+        log.debug("Inserting new project: {}", project.getTitle());
         String query = """
                 INSERT INTO projects (title, description, created_at)
                 VALUES (?, ?, ?)
@@ -43,14 +44,14 @@ public class ProjectRepository {
             ps.setString(1, project.getTitle());
             ps.setString(2, project.getDescription());
             ps.setTimestamp(3, Timestamp.from(project.getCreatedAt()));
-            ps.executeQuery();
+            ps.executeUpdate();
 
             ResultSet generatedKeys = ps.getGeneratedKeys();
             generatedKeys.next();
             project.setId(generatedKeys.getLong("id"));
             return project;
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -65,7 +66,19 @@ public class ProjectRepository {
             ps.executeUpdate();
             return project;
         } catch (SQLException e) {
-            log.info(e.getMessage());
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void delete(Long id) {
+        String query = "DELETE FROM projects WHERE id = ?";
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

@@ -3,31 +3,45 @@ package ru.kpfu.tasktracker.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.dto.user.UserCreateDto;
-import ru.kpfu.tasktracker.dto.user.UserResponseDto;
+import ru.kpfu.tasktracker.dto.user.UserDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.exception.IdenticalPasswordException;
 import ru.kpfu.tasktracker.exception.ObjectNotFoundException;
 import ru.kpfu.tasktracker.exception.UsernameAlreadyExistsException;
 import ru.kpfu.tasktracker.mapper.UserMapper;
+import ru.kpfu.tasktracker.model.ProjectMember;
 import ru.kpfu.tasktracker.model.User;
 import ru.kpfu.tasktracker.repository.UserRepository;
 import ru.kpfu.tasktracker.security.BCryptPasswordEncoder;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProjectMemberService projectMemberService;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder encoder;
 
-    public UserResponseDto findByUsername(String username) {
+    public UserProfileDto findByUsername(String username) {
         log.debug("IN UserService find by username {}", username);
         return userRepository.findByUsername(username)
-                .map(userMapper::toDto)
+                .map(userMapper::toProfileDto)
                 .orElseThrow(() -> new ObjectNotFoundException("user", username));
     }
 
-    public UserResponseDto save(UserCreateDto userCreateDto) {
+    public UserDto findByUsernameWithProjects(String username) {
+        log.debug("IN UserService find by username with projects {}", username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ObjectNotFoundException("user", username));
+        List<ProjectMember> memberships = projectMemberService.findAllByUser(user);
+        user.setMemberships(memberships);
+        return userMapper.toDto(user);
+    }
+
+    public UserProfileDto save(UserCreateDto userCreateDto) {
         log.debug("IN UserService save user {}", userCreateDto);
         checkUsername(userCreateDto.username());
 
@@ -36,7 +50,7 @@ public class UserService {
         user.setPasswordHash(passwordHash);
         user = userRepository.save(user);
         log.info("Saved new user with id {}", user.getId());
-        return userMapper.toDto(user);
+        return userMapper.toProfileDto(user);
     }
 
     public String changeUsername(Long userId, String username) {

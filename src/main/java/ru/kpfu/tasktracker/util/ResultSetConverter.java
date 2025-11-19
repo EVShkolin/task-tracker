@@ -1,6 +1,8 @@
 package ru.kpfu.tasktracker.util;
 
 import ru.kpfu.tasktracker.model.Project;
+import ru.kpfu.tasktracker.model.ProjectMember;
+import ru.kpfu.tasktracker.model.Role;
 import ru.kpfu.tasktracker.model.User;
 
 import java.sql.ResultSet;
@@ -28,6 +30,28 @@ public class ResultSetConverter {
                 rs.getString("description"),
                 rs.getTimestamp("created_at").toInstant(),
                 new ArrayList<>(),
+                new ArrayList<>()
+        );
+    }
+
+    public static ProjectMember convertToProjectMemberWithUser(ResultSet rs) throws SQLException {
+        return new ProjectMember(
+                rs.getLong("id"),
+                Role.valueOf(rs.getString("role")),
+                rs.getTimestamp("joined_at").toInstant(),
+                null,
+                convertToUser(rs),
+                new ArrayList<>()
+        );
+    }
+
+    public static ProjectMember convertToProjectMemberWithProject(ResultSet rs) throws SQLException {
+        return new ProjectMember(
+                rs.getLong("id"),
+                Role.valueOf(rs.getString("role")),
+                rs.getTimestamp("joined_at").toInstant(),
+                convertToProject(rs),
+                null,
                 new ArrayList<>()
         );
     }

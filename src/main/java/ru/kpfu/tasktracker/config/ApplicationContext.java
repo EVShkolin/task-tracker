@@ -7,12 +7,15 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.mapper.ProjectMapper;
 import ru.kpfu.tasktracker.mapper.UserMapper;
+import ru.kpfu.tasktracker.repository.ProjectMemberRepository;
 import ru.kpfu.tasktracker.repository.ProjectRepository;
 import ru.kpfu.tasktracker.repository.UserRepository;
 import ru.kpfu.tasktracker.security.BCryptPasswordEncoder;
+import ru.kpfu.tasktracker.service.ProjectMemberService;
 import ru.kpfu.tasktracker.service.ProjectService;
 import ru.kpfu.tasktracker.service.UserService;
 
@@ -28,32 +31,39 @@ public class ApplicationContext implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext context = sce.getServletContext();
         addCommonDependenciesToContext(context);
-        addUserDependenciesToContext(context);
-        addProjectDependenciesToContext(context);
+
+        ProjectMemberService projectMemberService = new ProjectMemberService(
+                new ProjectMemberRepository(dataSource)
+        );
+
+        UserService userService = new UserService(
+                new UserRepository(dataSource),
+                projectMemberService,
+                new UserMapper(),
+                new BCryptPasswordEncoder(12)
+        );
+
+        ProjectService projectService = new ProjectService(
+                new ProjectRepository(dataSource),
+                projectMemberService,
+                new ProjectMapper()
+        );
+
+        context.setAttribute("userService", userService);
+        context.setAttribute("projectService", projectService);
+        context.setAttribute("projectMemberService", projectMemberService);
+
+        UserValidator userValidator = new UserValidator();
+        context.setAttribute("userValidator", userValidator);
+        ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator();
+        context.setAttribute("projectMemberValidator", projectMemberValidator);
+
         log.info("Application context initialized");
     }
 
     private void addCommonDependenciesToContext(ServletContext context) {
         ObjectMapper objectMapper = new ObjectMapper();
         context.setAttribute("objectMapper", objectMapper);
-    }
-
-    private void addUserDependenciesToContext(ServletContext context) {
-        UserRepository userRepository = new UserRepository(dataSource);
-        UserMapper userMapper = new UserMapper();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        UserService userService = new UserService(userRepository, userMapper, encoder);
-        context.setAttribute("userService", userService);
-
-        UserValidator userValidator = new UserValidator();
-        context.setAttribute("userValidator", userValidator);
-    }
-
-    private void addProjectDependenciesToContext(ServletContext context) {
-        ProjectRepository projectRepository = new ProjectRepository(dataSource);
-        ProjectMapper projectMapper = new ProjectMapper();
-        ProjectService projectService = new ProjectService(projectRepository, projectMapper);
-        context.setAttribute("projectService", projectService);
     }
 
     private DataSource getDataSource() {

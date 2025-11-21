@@ -1,6 +1,8 @@
 package ru.kpfu.tasktracker.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -10,13 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.mapper.ProjectMapper;
+import ru.kpfu.tasktracker.mapper.TaskMapper;
 import ru.kpfu.tasktracker.mapper.UserMapper;
 import ru.kpfu.tasktracker.repository.ProjectMemberRepository;
 import ru.kpfu.tasktracker.repository.ProjectRepository;
+import ru.kpfu.tasktracker.repository.TaskRepository;
 import ru.kpfu.tasktracker.repository.UserRepository;
 import ru.kpfu.tasktracker.security.BCryptPasswordEncoder;
 import ru.kpfu.tasktracker.service.ProjectMemberService;
 import ru.kpfu.tasktracker.service.ProjectService;
+import ru.kpfu.tasktracker.service.TaskService;
 import ru.kpfu.tasktracker.service.UserService;
 
 import javax.sql.DataSource;
@@ -49,9 +54,16 @@ public class ApplicationContext implements ServletContextListener {
                 new ProjectMapper()
         );
 
+        TaskService taskService = new TaskService(
+                new TaskRepository(dataSource),
+                projectMemberService,
+                new TaskMapper()
+        );
+
         context.setAttribute("userService", userService);
         context.setAttribute("projectService", projectService);
         context.setAttribute("projectMemberService", projectMemberService);
+        context.setAttribute("taskService", taskService);
 
         UserValidator userValidator = new UserValidator();
         context.setAttribute("userValidator", userValidator);
@@ -63,6 +75,8 @@ public class ApplicationContext implements ServletContextListener {
 
     private void addCommonDependenciesToContext(ServletContext context) {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         context.setAttribute("objectMapper", objectMapper);
     }
 

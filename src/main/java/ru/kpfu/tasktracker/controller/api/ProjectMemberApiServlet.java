@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.kpfu.tasktracker.controller.validator.PathValidator;
 import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.dto.projectmember.MemberCreateDto;
 import ru.kpfu.tasktracker.dto.projectmember.RoleUpdateRequest;
@@ -43,17 +44,7 @@ public class ProjectMemberApiServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null || path.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String[] parts = path.split("/");
-        if (parts.length != 2) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Long id = Long.parseLong(parts[1]);
+        Long id = PathValidator.getIdFromPath(path);
         RoleUpdateRequest request = mapper.readValue(req.getInputStream(), RoleUpdateRequest.class);
         projectMemberValidator.validateRoleUpdateRequest(request);
         projectMemberService.updateRole(id, request);
@@ -62,17 +53,7 @@ public class ProjectMemberApiServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null || path.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String[] parts = path.split("/");
-        if (parts.length != 2) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Long id = Long.parseLong(parts[1]);
+        Long id = PathValidator.getIdFromPath(path);
         projectMemberService.delete(id);
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }

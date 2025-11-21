@@ -20,7 +20,7 @@ CREATE TABLE kanban_cards (
     description VARCHAR(100),
     project_id BIGINT NOT NULL,
     color VARCHAR(7) DEFAULT '#848d97',
-    display_order INT NOT NULL,
+    display_order INT UNIQUE NOT NULL,
 
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
@@ -40,7 +40,7 @@ CREATE TABLE project_members (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     project_id BIGINT NOT NULL,
-    role VARCHAR(15) DEFAULT 'VIEWER',
+    role VARCHAR(15) NOT NULL DEFAULT 'VIEWER',
     joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

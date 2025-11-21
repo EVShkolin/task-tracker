@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.dto.projectmember.MemberCreateDto;
 import ru.kpfu.tasktracker.dto.projectmember.RoleUpdateRequest;
-import ru.kpfu.tasktracker.model.Project;
-import ru.kpfu.tasktracker.model.ProjectMember;
-import ru.kpfu.tasktracker.model.Role;
-import ru.kpfu.tasktracker.model.User;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.model.*;
 import ru.kpfu.tasktracker.repository.ProjectMemberRepository;
 
 import java.util.List;
@@ -26,6 +24,13 @@ public class ProjectMemberService {
     public List<ProjectMember> findAllByProject(Project project) {
         log.debug("IN ProjectMemberService find all by project {}", project.getId());
         return projectMemberRepository.findByProject(project);
+    }
+
+    public List<UserProfileDto> findAllByTaskId(Long taskId) {
+        log.debug("IN ProjectMemberService find all by task {}", taskId);
+        return projectMemberRepository.findAllByTaskId(taskId).stream()
+                .map(m -> new UserProfileDto(m.getUser().getId(), m.getUser().getUsername()))
+                .toList();
     }
 
     public void save(MemberCreateDto memberDto) {

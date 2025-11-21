@@ -1,9 +1,6 @@
 package ru.kpfu.tasktracker.util;
 
-import ru.kpfu.tasktracker.model.Project;
-import ru.kpfu.tasktracker.model.ProjectMember;
-import ru.kpfu.tasktracker.model.Role;
-import ru.kpfu.tasktracker.model.User;
+import ru.kpfu.tasktracker.model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,6 +51,29 @@ public class ResultSetConverter {
                 null,
                 new ArrayList<>()
         );
+    }
+
+    public static Task convertToTask(ResultSet rs) throws SQLException {
+        KanbanCard card = KanbanCard.builder()
+                .id(rs.getLong("card_id"))
+                .title(rs.getString("card_title"))
+                .description(rs.getString("description"))
+                .color(rs.getString("color"))
+                .displayOrder(rs.getInt("display_order"))
+                .tasks(new ArrayList<>())
+                .build();
+
+        Task task = Task.builder()
+                .id(rs.getLong("task_id"))
+                .title(rs.getString("task_title"))
+                .content(rs.getString("content"))
+                .createdAt(rs.getTimestamp("created_at").toInstant())
+                .updatedAt(rs.getTimestamp("updated_at") == null ?
+                        null : rs.getTimestamp("updated_at").toInstant())
+                .card(card)
+                .build();
+        card.getTasks().add(task);
+        return task;
     }
 
 }

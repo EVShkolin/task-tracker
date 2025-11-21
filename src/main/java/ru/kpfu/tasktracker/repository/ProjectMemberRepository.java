@@ -68,6 +68,29 @@ public class ProjectMemberRepository {
         }
     }
 
+    public List<ProjectMember> findAllByTaskId(Long taskId) {
+        String query = """
+                SELECT * FROM project_members pm
+                JOIN members_tasks mt ON pm.id = mt.project_member_id
+                AND mt.task_id = ?
+                JOIN users u ON pm.user_id = u.id
+                """;
+        List<ProjectMember> projectMembers = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, taskId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ProjectMember projectMember = ResultSetConverter.convertToProjectMemberWithUser(rs);
+                projectMembers.add(projectMember);
+            }
+            return projectMembers;
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public void save(Long userId, Long projectId, String role) {
         String query = "INSERT INTO project_members (user_id, project_id, role) VALUES (?, ?, ?)";
         try (Connection connection = dataSource.getConnection()) {

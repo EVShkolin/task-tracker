@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.kpfu.tasktracker.controller.validator.PathValidator;
 import ru.kpfu.tasktracker.dto.project.ProjectCreateDto;
 import ru.kpfu.tasktracker.dto.project.ProjectDto;
 import ru.kpfu.tasktracker.service.ProjectService;
@@ -36,17 +37,7 @@ public class ProjectApiServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null || path.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String[] parts = path.split("/");
-        if (parts.length != 2) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Long projectId = Long.valueOf(parts[1]);
+        Long projectId = PathValidator.getIdFromPath(path);
         ProjectCreateDto projectDto = objectMapper.readValue(req.getReader(), ProjectCreateDto.class);
         projectService.update(projectId, projectDto);
     }
@@ -54,17 +45,7 @@ public class ProjectApiServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null || path.equals("/")) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-        String[] parts = path.split("/");
-        if (parts.length != 2) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Long projectId = Long.valueOf(parts[1]);
+        Long projectId = PathValidator.getIdFromPath(path);
         projectService.delete(projectId);
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }

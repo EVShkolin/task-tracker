@@ -8,7 +8,7 @@
     <div>
       <button class="edit-btn">Edit</button>
     </div>
-    <span class="close-btn">&times;</span>
+    <span class="close-info-btn">&times;</span>
   </div>
 
   <div class="task-info-content">
@@ -41,27 +41,19 @@
 
   <div class="task-info-comments">
     <h3>Comments</h3>
-    <div class="comment-form">
+    <form id="commentForm" class="comment-form">
       <div class="comment-input-container">
         <textarea
             class="comment-textarea"
+            name="comment-content"
             placeholder="Write a comment..."
             rows="4"
         ></textarea>
         <button class="comment-submit-btn">Send</button>
       </div>
-    </div>
+    </form>
 
-    <ul id="commentList" class="comment-list">
-<%--      <li class="comment-item">--%>
-<%--        <div class="comment-header">--%>
-<%--          <span class="comment-author"></span>--%>
-<%--          <span class="comment-date"></span>--%>
-<%--        </div>--%>
-<%--        <p class="comment-text"></p>--%>
-<%--      </li>--%>
-    </ul>
-
+    <ul id="commentList" class="comment-list"></ul>
   </div>
 </div>
 

@@ -27,42 +27,25 @@ public class TaskMapper {
                         null,
                         new ArrayList<>()
                 ),
+                new ArrayList<>(),
                 new ArrayList<>()
         );
     }
 
-    public TaskDto toDto(Task task, List<UserProfileDto> assignees) {
-        return new TaskDto(
-                task.getId(),
-                task.getTitle(),
-                task.getContent(),
-                task.getCreatedAt(),
-                new KanbanCardDto(
-                        task.getCard().getId(),
-                        task.getCard().getTitle(),
-                        task.getCard().getDescription(),
-                        task.getCard().getColor(),
-                        task.getCard().getDisplayOrder(),
-                        null,
-                        new ArrayList<>()
-                ),
-                assignees
-        );
-    }
 
     public Task fromDto(TaskDto dto) {
         KanbanCard card = KanbanCard.builder()
-                .id(dto.card().getId())
-                .title(dto.card().getTitle())
-                .description(dto.card().getDescription())
-                .color(dto.card().getColor())
-                .displayOrder(dto.card().getDisplayOrder())
+                .id(dto.getCard().getId())
+                .title(dto.getCard().getTitle())
+                .description(dto.getCard().getDescription())
+                .color(dto.getCard().getColor())
+                .displayOrder(dto.getCard().getDisplayOrder())
                 .tasks(new ArrayList<>())
                 .build();
 
         Task task = Task.builder()
-                .title(dto.title())
-                .content(dto.content())
+                .title(dto.getTitle())
+                .content(dto.getContent())
                 .card(card)
                 .updatedAt(Instant.now())
                 .build();

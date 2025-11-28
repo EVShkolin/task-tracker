@@ -5,6 +5,8 @@ const assigneeSelectPopup = document.getElementById('assigneeSelectPopup');
 const assigneeSelectList = document.getElementById('assigneeSelectList');
 let currentTaskId;
 
+const commentList = document.getElementById('commentList');
+
 function openTaskInfo(task) {
     popup.style.display = 'flex';
     loadTaskDataToPopup(task);
@@ -16,7 +18,7 @@ function closeTaskInfo() {
 }
 
 popup.addEventListener('click', e => {
-    if (e.target === popup || e.target.classList.contains('close-btn')) {
+    if (e.target === popup || e.target.classList.contains('close-info-btn')) {
         closeTaskInfo();
     }
 })
@@ -40,6 +42,7 @@ async function loadTaskDataToPopup(task) {
         console.log(taskData);
 
         updateAssigneeList(taskData.assignees);
+        updateCommentList(taskData.comments);
     } catch (error) {
         console.log(error);
     }
@@ -49,11 +52,11 @@ function updateAssigneeList(assignees) {
     const assigneeList = document.getElementById('assigneeList');
     assigneeList.innerHTML = '';
 
-    if (assignees || assignees.length > 0) {
+    if (assignees && assignees.length > 0) {
         assignees.forEach(assignee => {
             const assigneeItem = createAssigneeItem(assignee);
             assigneeList.appendChild(assigneeItem);
-        })
+        });
     }
 }
 
@@ -74,6 +77,58 @@ function createAssigneeItem(assignee) {
     item.className = 'assignee-item';
     item.innerHTML = `<p class="assignee-name">${assignee.username}</p>`;
     return item;
+}
+
+function updateCommentList(comments) {
+    commentList.innerHTML = '';
+
+    if (comments && comments.length > 0) {
+        comments.forEach(c => {
+            const commentItem = createCommentItem(c);
+            commentList.appendChild(commentItem);
+        });
+    }
+}
+
+function createCommentItem(comment) {
+    const item = document.createElement('li');
+    item.id = `comment-${comment.id}`;
+    item.className = 'comment-item';
+    item.innerHTML = `
+        <div class="comment-header">
+            <span class="comment-author">${comment.authorName}</span>
+            <span class="comment-date">${formatDate(comment.createdAt)}</span>
+        </div>
+        <p class="comment-text">${comment.content}</p>
+        `;
+    return item;
+}
+
+document.getElementById('commentForm').addEventListener('submit', async function handleCommentCreate(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {
+        taskId: currentTaskId,
+        authorId: memberId,
+        content: formData.get('comment-content')
+    }
+
+    const response = await fetch(`${contextPath}/api/v1/comments`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+
+    const comment = await response.json();
+    addNewComment(comment);
+    this.reset();
+});
+
+function addNewComment(comment) {
+    const commentItem = createCommentItem(comment);
+    commentList.appendChild(commentItem);
 }
 
 // ------------------
@@ -103,7 +158,7 @@ function populateAssigneeSelectList(membersList) {
             assigneeSelectList.appendChild(listItem);
         });
     } else {
-        log.wait('No members in the project');
+        console.warn('No members in the project');
     }
 }
 
@@ -119,7 +174,6 @@ async function assignMemberToTask(memberId) {
         }
         closeAssigneeSelectPopup();
 
-        // Обновляем данные задачи чтобы показать нового исполнителя
         await reloadTaskData();
 
     } catch (error) {

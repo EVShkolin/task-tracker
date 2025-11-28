@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.kpfu.tasktracker.dto.user.UserDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.service.UserService;
 
 import java.io.IOException;
@@ -22,8 +23,8 @@ public class HomePageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = (String) req.getAttribute("username");
-        UserDto user = userService.findByUsernameWithProjects(username);
+        UserProfileDto userData = (UserProfileDto) req.getAttribute("user");
+        UserDto user = userService.findByUsernameWithProjects(userData.username());
         req.setAttribute("user", user);
         req.getRequestDispatcher("index.jsp").forward(req, resp);
     }

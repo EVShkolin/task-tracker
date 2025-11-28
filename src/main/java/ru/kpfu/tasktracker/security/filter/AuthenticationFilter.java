@@ -37,7 +37,7 @@ public class AuthenticationFilter extends HttpFilter {
         }
 
         if (JwtProvider.validate(token)) {
-            req.setAttribute("username", JwtProvider.getUsernameFromToken(token));
+            req.setAttribute("user", JwtProvider.getUserFromToken(token));
             res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             chain.doFilter(req, res);
         } else {

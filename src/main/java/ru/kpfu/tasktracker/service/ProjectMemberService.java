@@ -32,6 +32,12 @@ public class ProjectMemberService {
                 .toList();
     }
 
+    public Long findByUserIdAndProjectId(Long userId, Long projectId) {
+        log.debug("IN ProjectMemberService find by user id {} and project id {}", userId, projectId);
+        return projectMemberRepository.findByUserIdAndProjectId(userId, projectId)
+                .orElseThrow(() -> new RuntimeException("Project member not found"));
+    }
+
     public List<UserProfileDto> findAllByTaskId(Long taskId) {
         log.debug("IN ProjectMemberService find all by task {}", taskId);
         return projectMemberRepository.findAllByTaskId(taskId).stream()

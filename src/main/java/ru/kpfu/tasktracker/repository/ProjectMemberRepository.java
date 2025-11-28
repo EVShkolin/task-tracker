@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -73,6 +74,25 @@ public class ProjectMemberRepository {
                 projectMembers.add(projectMember);
             }
             return projectMembers;
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public Optional<Long> findByUserIdAndProjectId(Long userId, Long projectId) {
+        String query = """
+                SELECT pm.id AS member_id FROM project_members pm
+                JOIN users u ON u.id = pm.user_id AND u.id = ?
+                JOIN projects p ON p.id = pm.project_id AND p.id = ?
+                """;
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, userId);
+            ps.setLong(2, projectId);
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next() ? Optional.of(rs.getLong("member_id")) : Optional.empty();
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());

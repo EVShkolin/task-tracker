@@ -132,7 +132,8 @@
 <script>
     const contextPath = '${pageContext.request.contextPath}';
     const projectId = ${project.id};
-    console.log('ContextPath = ' + contextPath + ' projectId = ' + projectId);
+    const memberId = ${memberId};
+    console.log('ContextPath = ' + contextPath + ' projectId = ' + projectId + ' memberId = ' + memberId);
 
     const members = [
         <c:forEach items="${project.members}" var="member" varStatus="loop">

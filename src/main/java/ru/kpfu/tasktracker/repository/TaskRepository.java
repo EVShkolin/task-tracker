@@ -7,6 +7,8 @@ import ru.kpfu.tasktracker.util.ResultSetConverter;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -37,7 +39,24 @@ public class TaskRepository {
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
-            return rs.next() ? Optional.of(ResultSetConverter.convertToTask(rs)) : Optional.empty();
+            return rs.next() ? Optional.of(ResultSetConverter.convertToTaskWithCard(rs)) : Optional.empty();
+        } catch (SQLException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public List<Task> findByCardId(Long cardId) {
+        String query = "SELECT * FROM tasks WHERE kanban_card_id = ?";
+        List<Task> tasks = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setLong(1, cardId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                tasks.add(ResultSetConverter.convertToTask(rs));
+            }
+            return tasks;
         } catch (SQLException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
@@ -146,7 +165,7 @@ public class TaskRepository {
     public boolean taskAndMemberInSameProject(Long taskId, Long memberId) {
         String query = """
                 SELECT * FROM
-                tasks t JOIN kanban_cards kc ON t.id = kc.id
+                tasks t JOIN kanban_cards kc ON t.kanban_card_id = kc.id
                 AND t.id = ?
                 JOIN project_members pm ON pm.project_id = kc.project_id
                 WHERE pm.id = ?

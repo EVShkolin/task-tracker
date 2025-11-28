@@ -2,6 +2,7 @@ package ru.kpfu.tasktracker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.dto.projectmember.ProjectMemberDto;
 import ru.kpfu.tasktracker.dto.user.UserCreateDto;
 import ru.kpfu.tasktracker.dto.user.UserDto;
 import ru.kpfu.tasktracker.dto.user.UserProfileDto;

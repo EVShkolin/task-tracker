@@ -20,9 +20,9 @@ CREATE TABLE kanban_cards (
     description VARCHAR(100),
     project_id BIGINT NOT NULL,
     color VARCHAR(7) DEFAULT '#848d97',
-    display_order INT UNIQUE NOT NULL,
+    display_order INT NOT NULL,
 
-    FOREIGN KEY (project_id) REFERENCES projects(id)
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 );
 
 CREATE TABLE tasks (

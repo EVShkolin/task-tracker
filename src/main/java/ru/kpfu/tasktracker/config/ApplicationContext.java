@@ -11,18 +11,10 @@ import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
-import ru.kpfu.tasktracker.mapper.ProjectMapper;
-import ru.kpfu.tasktracker.mapper.TaskMapper;
-import ru.kpfu.tasktracker.mapper.UserMapper;
-import ru.kpfu.tasktracker.repository.ProjectMemberRepository;
-import ru.kpfu.tasktracker.repository.ProjectRepository;
-import ru.kpfu.tasktracker.repository.TaskRepository;
-import ru.kpfu.tasktracker.repository.UserRepository;
+import ru.kpfu.tasktracker.mapper.*;
+import ru.kpfu.tasktracker.repository.*;
 import ru.kpfu.tasktracker.security.BCryptPasswordEncoder;
-import ru.kpfu.tasktracker.service.ProjectMemberService;
-import ru.kpfu.tasktracker.service.ProjectService;
-import ru.kpfu.tasktracker.service.TaskService;
-import ru.kpfu.tasktracker.service.UserService;
+import ru.kpfu.tasktracker.service.*;
 
 import javax.sql.DataSource;
 
@@ -38,7 +30,8 @@ public class ApplicationContext implements ServletContextListener {
         addCommonDependenciesToContext(context);
 
         ProjectMemberService projectMemberService = new ProjectMemberService(
-                new ProjectMemberRepository(dataSource)
+                new ProjectMemberRepository(dataSource),
+                new ProjectMemberMapper()
         );
 
         UserService userService = new UserService(
@@ -48,22 +41,30 @@ public class ApplicationContext implements ServletContextListener {
                 new BCryptPasswordEncoder(12)
         );
 
+        TaskRepository taskRepository = new TaskRepository(dataSource);
+        TaskService taskService = new TaskService(
+                taskRepository,
+                projectMemberService,
+                new TaskMapper()
+        );
+
+        KanbanCardService kanbanCardService = new KanbanCardService(
+                new KanbanCardRepository(dataSource, taskRepository),
+                new KanbanCardMapper()
+        );
+
         ProjectService projectService = new ProjectService(
                 new ProjectRepository(dataSource),
                 projectMemberService,
+                kanbanCardService,
                 new ProjectMapper()
-        );
-
-        TaskService taskService = new TaskService(
-                new TaskRepository(dataSource),
-                projectMemberService,
-                new TaskMapper()
         );
 
         context.setAttribute("userService", userService);
         context.setAttribute("projectService", projectService);
         context.setAttribute("projectMemberService", projectMemberService);
         context.setAttribute("taskService", taskService);
+        context.setAttribute("kanbanCardService", kanbanCardService);
 
         UserValidator userValidator = new UserValidator();
         context.setAttribute("userValidator", userValidator);

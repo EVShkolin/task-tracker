@@ -7,7 +7,6 @@ import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.exception.ObjectNotFoundException;
 import ru.kpfu.tasktracker.exception.TaskAssignmentException;
 import ru.kpfu.tasktracker.mapper.TaskMapper;
-import ru.kpfu.tasktracker.model.ProjectMember;
 import ru.kpfu.tasktracker.model.Task;
 import ru.kpfu.tasktracker.repository.TaskRepository;
 
@@ -35,6 +34,7 @@ public class TaskService {
         if (taskRepository.taskAndMemberInSameProject(taskId, memberId)) {
             taskRepository.addAssignee(taskId, memberId);
         } else {
+            log.warn("Task {} already assigned to member {}", taskId, memberId);
             throw new TaskAssignmentException(taskId, memberId);
         }
     }

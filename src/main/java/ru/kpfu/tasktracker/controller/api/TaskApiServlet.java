@@ -1,5 +1,6 @@
 package ru.kpfu.tasktracker.controller.api;
 
+import ch.qos.logback.core.encoder.JsonEscapeUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,6 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ru.kpfu.tasktracker.controller.validator.PathValidator;
+import ru.kpfu.tasktracker.dto.task.StatusUpdateRequest;
 import ru.kpfu.tasktracker.dto.task.TaskDto;
 import ru.kpfu.tasktracker.exception.InvalidPathException;
 import ru.kpfu.tasktracker.service.TaskService;
@@ -63,8 +65,8 @@ public class TaskApiServlet extends HttpServlet {
         if (PathValidator.isValidStatusUpdatePath(path)) {
             String[] pathParts = path.split("/");
             Long taskId = Long.valueOf(pathParts[1]);
-            Long cardId = Long.valueOf(pathParts[3]);
-            taskService.updateStatus(taskId, cardId);
+            StatusUpdateRequest request = objectMapper.readValue(req.getReader(), StatusUpdateRequest.class);
+            taskService.updateStatus(taskId, request.cardId());
             return;
         }
 

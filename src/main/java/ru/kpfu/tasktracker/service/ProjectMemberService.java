@@ -3,8 +3,10 @@ package ru.kpfu.tasktracker.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.dto.projectmember.MemberCreateDto;
+import ru.kpfu.tasktracker.dto.projectmember.ProjectMemberDto;
 import ru.kpfu.tasktracker.dto.projectmember.RoleUpdateRequest;
 import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.mapper.ProjectMemberMapper;
 import ru.kpfu.tasktracker.model.*;
 import ru.kpfu.tasktracker.repository.ProjectMemberRepository;
 
@@ -15,21 +17,25 @@ import java.util.List;
 public class ProjectMemberService {
 
     private final ProjectMemberRepository projectMemberRepository;
+    private final ProjectMemberMapper projectMemberMapper;
 
     public List<ProjectMember> findAllByUser(User user) {
         log.debug("IN ProjectMemberService find all by user {}", user.getId());
         return projectMemberRepository.findByUser(user);
     }
 
-    public List<ProjectMember> findAllByProject(Project project) {
+    public List<ProjectMemberDto> findAllByProject(Project project) {
         log.debug("IN ProjectMemberService find all by project {}", project.getId());
-        return projectMemberRepository.findByProject(project);
+        List<ProjectMember> projectMembers = projectMemberRepository.findByProject(project);
+        return projectMembers.stream()
+                .map(projectMemberMapper::toDto)
+                .toList();
     }
 
     public List<UserProfileDto> findAllByTaskId(Long taskId) {
         log.debug("IN ProjectMemberService find all by task {}", taskId);
         return projectMemberRepository.findAllByTaskId(taskId).stream()
-                .map(m -> new UserProfileDto(m.getUser().getId(), m.getUser().getUsername()))
+                .map(m -> new UserProfileDto(m.getId(), m.getUser().getUsername()))
                 .toList();
     }
 

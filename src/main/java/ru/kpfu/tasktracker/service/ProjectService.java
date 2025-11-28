@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.dto.project.ProjectCreateDto;
 import ru.kpfu.tasktracker.dto.project.ProjectDto;
 import ru.kpfu.tasktracker.dto.projectmember.MemberCreateDto;
+import ru.kpfu.tasktracker.dto.projectmember.ProjectMemberDto;
+import ru.kpfu.tasktracker.dto.task.KanbanCardDto;
 import ru.kpfu.tasktracker.exception.ObjectNotFoundException;
 import ru.kpfu.tasktracker.mapper.ProjectMapper;
 import ru.kpfu.tasktracker.model.Project;
@@ -20,15 +22,19 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectMemberService projectMemberService;
+    private final KanbanCardService kanbanCardService;
     private final ProjectMapper projectMapper;
 
     public ProjectDto findById(Long id) {
         log.debug("IN ProjectService get project by id {}", id);
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("project", id));
-        List<ProjectMember> members = projectMemberService.findAllByProject(project);
-        project.setMembers(members);
-        return projectMapper.toDto(project);
+        ProjectDto projectDto = projectMapper.toDto(project);
+        List<ProjectMemberDto> members = projectMemberService.findAllByProject(project);
+        List<KanbanCardDto> cardDtos = kanbanCardService.getAllByProjectId(id);
+        projectDto.setMembers(members);
+        projectDto.setCards(cardDtos);
+        return projectDto;
     }
 
     public ProjectDto save(ProjectCreateDto dto) {
@@ -39,6 +45,7 @@ public class ProjectService {
 
         MemberCreateDto memberCreateDto = new MemberCreateDto(null, dto.creatorId(), project.getId(), Role.CREATOR);
         projectMemberService.save(memberCreateDto);
+        kanbanCardService.createDefaultCards(project);
         log.info("Created new project {}", project.getId());
         return projectMapper.toDto(project);
     }

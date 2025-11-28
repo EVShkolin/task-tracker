@@ -1,13 +1,24 @@
 package ru.kpfu.tasktracker.dto.project;
 
+import lombok.*;
 import ru.kpfu.tasktracker.dto.projectmember.ProjectMemberDto;
-import ru.kpfu.tasktracker.model.KanbanCard;
+import ru.kpfu.tasktracker.dto.task.KanbanCardDto;
 
 import java.util.List;
 
-public record ProjectDto(
-        Long id,
-        String title,
-        String description,
-        List<ProjectMemberDto> members,
-        List<KanbanCard> cards) {}
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class ProjectDto {
+
+    private Long id;
+
+    private String title;
+
+    private String description;
+
+    private List<ProjectMemberDto> members;
+
+    private List<KanbanCardDto> cards;
+
+}

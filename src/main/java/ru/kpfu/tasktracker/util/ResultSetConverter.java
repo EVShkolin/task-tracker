@@ -33,7 +33,7 @@ public class ResultSetConverter {
 
     public static ProjectMember convertToProjectMemberWithUser(ResultSet rs) throws SQLException {
         return new ProjectMember(
-                rs.getLong("id"),
+                rs.getLong("member_id"),
                 Role.valueOf(rs.getString("role")),
                 rs.getTimestamp("joined_at").toInstant(),
                 null,
@@ -44,7 +44,7 @@ public class ResultSetConverter {
 
     public static ProjectMember convertToProjectMemberWithProject(ResultSet rs) throws SQLException {
         return new ProjectMember(
-                rs.getLong("id"),
+                rs.getLong("project_id"),
                 Role.valueOf(rs.getString("role")),
                 rs.getTimestamp("joined_at").toInstant(),
                 convertToProject(rs),
@@ -53,7 +53,7 @@ public class ResultSetConverter {
         );
     }
 
-    public static Task convertToTask(ResultSet rs) throws SQLException {
+    public static Task convertToTaskWithCard(ResultSet rs) throws SQLException {
         KanbanCard card = KanbanCard.builder()
                 .id(rs.getLong("card_id"))
                 .title(rs.getString("card_title"))
@@ -74,6 +74,29 @@ public class ResultSetConverter {
                 .build();
         card.getTasks().add(task);
         return task;
+    }
+
+    public static Task convertToTask(ResultSet rs) throws SQLException {
+        return Task.builder()
+                .id(rs.getLong("id"))
+                .title(rs.getString("title"))
+                .content(rs.getString("content"))
+                .createdAt(rs.getTimestamp("created_at").toInstant())
+                .updatedAt(rs.getTimestamp("updated_at").toInstant())
+                .build();
+    }
+
+    public static KanbanCard convertToCard(ResultSet rs) throws SQLException {
+        return KanbanCard.builder()
+                .id(rs.getLong("card_id"))
+                .title(rs.getString("card_title"))
+                .description(rs.getString("description"))
+                .project(Project.builder()
+                        .id(rs.getLong("project_id"))
+                        .build())
+                .color(rs.getString("color"))
+                .displayOrder(rs.getInt("display_order"))
+                .build();
     }
 
 }

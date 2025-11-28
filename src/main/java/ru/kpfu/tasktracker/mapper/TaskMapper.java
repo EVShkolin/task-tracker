@@ -23,7 +23,9 @@ public class TaskMapper {
                         task.getCard().getTitle(),
                         task.getCard().getDescription(),
                         task.getCard().getColor(),
-                        task.getCard().getDisplayOrder()
+                        task.getCard().getDisplayOrder(),
+                        null,
+                        new ArrayList<>()
                 ),
                 new ArrayList<>()
         );
@@ -40,7 +42,9 @@ public class TaskMapper {
                         task.getCard().getTitle(),
                         task.getCard().getDescription(),
                         task.getCard().getColor(),
-                        task.getCard().getDisplayOrder()
+                        task.getCard().getDisplayOrder(),
+                        null,
+                        new ArrayList<>()
                 ),
                 assignees
         );
@@ -48,11 +52,11 @@ public class TaskMapper {
 
     public Task fromDto(TaskDto dto) {
         KanbanCard card = KanbanCard.builder()
-                .id(dto.card().id())
-                .title(dto.card().title())
-                .description(dto.card().description())
-                .color(dto.card().color())
-                .displayOrder(dto.card().displayOrder())
+                .id(dto.card().getId())
+                .title(dto.card().getTitle())
+                .description(dto.card().getDescription())
+                .color(dto.card().getColor())
+                .displayOrder(dto.card().getDisplayOrder())
                 .tasks(new ArrayList<>())
                 .build();
 

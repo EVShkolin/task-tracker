@@ -1,7 +1,6 @@
 package ru.kpfu.tasktracker.mapper;
 
 import ru.kpfu.tasktracker.dto.project.ProjectCreateDto;
-import ru.kpfu.tasktracker.dto.projectmember.ProjectMemberDto;
 import ru.kpfu.tasktracker.dto.project.ProjectDto;
 import ru.kpfu.tasktracker.model.Project;
 
@@ -15,13 +14,8 @@ public class ProjectMapper {
                 project.getId(),
                 project.getTitle(),
                 project.getDescription(),
-                project.getMembers().stream()
-                        .map(pm -> new ProjectMemberDto(
-                                pm.getId(),
-                                pm.getUser().getUsername(),
-                                pm.getRole()))
-                        .toList(),
-                project.getCards()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 

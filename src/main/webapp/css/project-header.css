@@ -1,0 +1,61 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #010409;
+    height: 60px;
+    color: white;
+    border-bottom: 1px solid #3d444d;
+    padding: 0 20px;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #161b22;
+    border-bottom: 1px solid #3d444d;
+    padding: 10px;
+}
+
+.project-info {
+    max-width: 1200px;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+.project-title {
+    color: #f0f6fc;
+    font-size: 1.5rem;
+}
+
+.menu {
+    display: flex;
+    gap: 10px;
+}
+
+.menu-item {
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+    background-color: #1a1f25;
+}
+
+.menu-item__active {
+    border: 1px solid #3d444d;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}

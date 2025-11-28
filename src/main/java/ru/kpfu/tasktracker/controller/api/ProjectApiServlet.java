@@ -26,7 +26,7 @@ public class ProjectApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ProjectCreateDto projectDto = objectMapper.readValue(req.getReader(), ProjectCreateDto.class);
         ProjectDto project = projectService.save(projectDto);
         resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -35,7 +35,7 @@ public class ProjectApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getPathInfo();
         Long projectId = PathValidator.getIdFromPath(path);
         ProjectCreateDto projectDto = objectMapper.readValue(req.getReader(), ProjectCreateDto.class);
@@ -43,7 +43,7 @@ public class ProjectApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         String path = req.getPathInfo();
         Long projectId = PathValidator.getIdFromPath(path);
         projectService.delete(projectId);

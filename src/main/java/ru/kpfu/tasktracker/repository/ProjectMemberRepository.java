@@ -22,7 +22,10 @@ public class ProjectMemberRepository {
 
     public List<ProjectMember> findByUser(User user) {
         String query = """
-        SELECT p.*, pm.id, pm.role, pm.joined_at
+        SELECT  p.*,
+                pm.id AS project_id,
+                pm.role,
+                pm.joined_at
         FROM project_members pm
         JOIN users u ON pm.user_id = u.id AND pm.user_id = ?
         JOIN projects p ON pm.project_id = p.id
@@ -46,7 +49,15 @@ public class ProjectMemberRepository {
 
     public List<ProjectMember> findByProject(Project project) {
         String query = """
-        SELECT u.*, pm.id, pm.role, pm.joined_at
+        SELECT  u.id AS id,
+                u.username,
+                u.password_hash,
+                u.is_active,
+                u.registered_at,
+                u.is_admin,
+                pm.id AS member_id,
+                pm.role,
+                pm.joined_at
         FROM project_members pm
         JOIN projects p ON pm.project_id = p.id AND pm.project_id = ?
         JOIN users u ON pm.user_id = u.id
@@ -70,7 +81,16 @@ public class ProjectMemberRepository {
 
     public List<ProjectMember> findAllByTaskId(Long taskId) {
         String query = """
-                SELECT * FROM project_members pm
+                SELECT  u.id AS id,
+                        u.username,
+                        u.password_hash,
+                        u.is_active,
+                        u.registered_at,
+                        u.is_admin,
+                        pm.id AS member_id,
+                        pm.role,
+                        pm.joined_at
+                FROM project_members pm
                 JOIN members_tasks mt ON pm.id = mt.project_member_id
                 AND mt.task_id = ?
                 JOIN users u ON pm.user_id = u.id

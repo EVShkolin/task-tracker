@@ -25,10 +25,10 @@ public class PathValidator {
 
     public static boolean isValidStatusUpdatePath(String path) {
         String[] parts = path.split("/");
-        if (parts.length != 4) { // .../{task_id}/status/{member_id}
+        if (parts.length != 3) { // .../{card_id}/status
             return false;
         }
-        return isNumeric(parts[1]) && isNumeric(parts[3]) && parts[2].equals("status");
+        return isNumeric(parts[1]) && parts[2].equals("status");
     }
 
     public static boolean isValidUnassignPath(String path) {

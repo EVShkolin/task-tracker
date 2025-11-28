@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.controller.validator.PathValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.dto.user.UpdatePasswordRequest;
 import ru.kpfu.tasktracker.dto.user.UpdateUsernameRequest;
@@ -43,7 +44,7 @@ public class UserApiServlet extends HttpServlet {
 
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null) {
+        if (path == null || path.equals("/")) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -85,18 +86,7 @@ public class UserApiServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
-        if (path == null) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        String[] pathParts = path.split("/");
-        if (pathParts.length != 2) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Long userId = Long.valueOf(pathParts[1]);
+        Long userId = PathValidator.getIdFromPath(path);
         userService.softDelete(userId);
         resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }

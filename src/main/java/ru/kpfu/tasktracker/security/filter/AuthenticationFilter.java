@@ -23,6 +23,7 @@ public class AuthenticationFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
+//        chain.doFilter(req, res);
         String requestUri = req.getRequestURI();
         if (isPublicResource(requestUri)) {
             chain.doFilter(req, res);

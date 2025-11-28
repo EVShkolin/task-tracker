@@ -5,7 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.kpfu.tasktracker.dto.user.UserResponseDto;
+import ru.kpfu.tasktracker.dto.user.UserDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.service.UserService;
 
 import java.io.IOException;
@@ -23,8 +24,8 @@ public class ProfilePageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = (String) req.getAttribute("username");
-        UserResponseDto userDto = userService.findByUsername(username);
-        req.setAttribute("user", userDto);
+        UserProfileDto user = userService.findByUsername(username);
+        req.setAttribute("user", user);
         req.getRequestDispatcher("/profile.jsp").forward(req, resp);
     }
 

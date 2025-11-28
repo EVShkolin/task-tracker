@@ -3,6 +3,7 @@ package ru.kpfu.tasktracker.model;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,8 +21,8 @@ public class Project {
 
     private Instant createdAt;
 
-    private List<ProjectMember> members;
+    private List<ProjectMember> members = new ArrayList<>();
 
-    private List<KanbanCard> cards;
+    private List<KanbanCard> cards = new ArrayList<>();
 
 }

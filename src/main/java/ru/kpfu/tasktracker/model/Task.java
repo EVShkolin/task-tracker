@@ -1,17 +1,16 @@
 package ru.kpfu.tasktracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Task {
 
     private Long id;
@@ -26,8 +25,8 @@ public class Task {
 
     private KanbanCard card;
 
-    private List<ProjectMember> assignees;
+    private List<ProjectMember> assignees = new ArrayList<>();
 
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
 }

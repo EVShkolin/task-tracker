@@ -11,6 +11,7 @@ import ru.kpfu.tasktracker.dto.ExceptionDto;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.InvalidParameterException;
 
 @WebFilter("/*")
 public class GlobalExceptionHandler extends HttpFilter {
@@ -26,7 +27,11 @@ public class GlobalExceptionHandler extends HttpFilter {
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
         try {
             super.doFilter(req, res, chain);
-        } catch (IdenticalPasswordException | UsernameAlreadyExistsException e) {
+        } catch (IdenticalPasswordException |
+                 UsernameAlreadyExistsException |
+                 InvalidParameterException |
+                 TaskAssignmentException |
+                 TaskStatusUpdateException e) {
             ExceptionDto exceptionDto = new ExceptionDto(
                     HttpServletResponse.SC_BAD_REQUEST,
                     e.getMessage(),

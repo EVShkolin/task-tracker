@@ -60,6 +60,30 @@
     background-color: #2ea043;
 }
 
+.close-info-btn {
+    position: static;
+    flex-shrink: 0;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #8b949e;
+    background: none;
+    border: none;
+    transition: color 0.3s ease;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    margin: 0;
+}
+
+.close-info-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f85149;
+}
+
 .task-info-content {
     display: flex;
     padding: 20px;
@@ -213,7 +237,6 @@
     word-wrap: break-word;
 }
 
-/* Comments Section */
 .task-info-comments {
     padding: 20px;
     border-top: 1px solid #3d444d;

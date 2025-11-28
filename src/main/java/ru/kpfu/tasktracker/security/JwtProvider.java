@@ -1,21 +1,26 @@
 package ru.kpfu.tasktracker.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Slf4j
 public class JwtProvider {
 
-    private static final SecretKey KEY = Jwts.SIG.HS256.key().build();
-    private static final long EXPIRATION_TIME = 600000; // 10 min
+    private static final SecretKey KEY = Keys.hmacShaKeyFor(System.getenv("SECRET_KEY").getBytes(StandardCharsets.UTF_8));
+    private static final long EXPIRATION_TIME = 1800000; // 30 min
 
-    public static String generateToken(String username) {
+    public static String generateToken(UserProfileDto user) {
         return Jwts.builder()
-                .subject(username)
+                .claim("id", user.id())
+                .claim("username", user.username())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(KEY)
@@ -35,14 +40,16 @@ public class JwtProvider {
         }
     }
 
-    public static String getUsernameFromToken(String token) {
+    public static UserProfileDto getUserFromToken(String token) {
         try {
-            return Jwts.parser()
+            Claims claims = Jwts.parser()
                     .verifyWith(KEY)
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload()
-                    .getSubject();
+                    .getPayload();
+            Long id = claims.get("id", Long.class);
+            String username = claims.get("username", String.class);
+            return new UserProfileDto(id, username);
         } catch (SignatureException e) {
             log.warn(e.getMessage());
             throw new IllegalArgumentException();

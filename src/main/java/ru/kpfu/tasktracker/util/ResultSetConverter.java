@@ -99,4 +99,14 @@ public class ResultSetConverter {
                 .build();
     }
 
+    public static Comment convertToComment(ResultSet rs) throws SQLException {
+        return new Comment(
+                rs.getLong("comment_id"),
+                rs.getString("content"),
+                rs.getTimestamp("created_at").toInstant(),
+                convertToProjectMemberWithUser(rs),
+                new Task()
+        );
+    }
+
 }

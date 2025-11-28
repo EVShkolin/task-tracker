@@ -64,6 +64,6 @@ CREATE TABLE members_tasks (
 
     PRIMARY KEY (project_member_id, task_id),
     FOREIGN KEY (project_member_id) REFERENCES project_members(id),
-    FOREIGN KEY (task_id) REFERENCES tasks(id)
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
 );
 

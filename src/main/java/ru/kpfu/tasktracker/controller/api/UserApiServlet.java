@@ -13,6 +13,8 @@ import ru.kpfu.tasktracker.controller.validator.PathValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.dto.user.UpdatePasswordRequest;
 import ru.kpfu.tasktracker.dto.user.UpdateUsernameRequest;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.security.CookieManager;
 import ru.kpfu.tasktracker.security.JwtProvider;
 import ru.kpfu.tasktracker.service.UserService;
 
@@ -75,12 +77,9 @@ public class UserApiServlet extends HttpServlet {
     }
 
     private void updateJwt(String username, HttpServletResponse resp) {
-        String token = JwtProvider.generateToken(username);
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(10 * 60);
-        cookie.setPath("/");
-        resp.addCookie(cookie);
+        UserProfileDto user = userService.findByUsername(username);
+        Cookie jwtCookie = CookieManager.getCookieWithJwt(user);
+        resp.addCookie(jwtCookie);
     }
 
     @Override

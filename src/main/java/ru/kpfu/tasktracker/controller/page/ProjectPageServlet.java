@@ -5,8 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.kpfu.tasktracker.controller.validator.PathValidator;
 import ru.kpfu.tasktracker.dto.project.ProjectDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.service.ProjectMemberService;
 import ru.kpfu.tasktracker.service.ProjectService;
 
 import java.io.IOException;
@@ -15,10 +16,12 @@ import java.io.IOException;
 public class ProjectPageServlet extends HttpServlet {
 
     private ProjectService projectService;
+    private ProjectMemberService projectMemberService;
 
     @Override
     public void init() throws ServletException {
         this.projectService = (ProjectService) getServletContext().getAttribute("projectService");
+        this.projectMemberService = (ProjectMemberService) getServletContext().getAttribute("projectMemberService");
     }
 
     @Override
@@ -32,6 +35,9 @@ public class ProjectPageServlet extends HttpServlet {
         }
 
         ProjectDto project = projectService.findById(projectId);
+        UserProfileDto user = (UserProfileDto) req.getAttribute("user");
+        Long memberId = projectMemberService.findByUserIdAndProjectId(user.id(), projectId);
+        req.setAttribute("memberId", memberId);
         req.setAttribute("project", project);
         if ("kanban".equals(projectMode)) {
             req.getRequestDispatcher("/project-kanban.jsp").forward(req, resp);

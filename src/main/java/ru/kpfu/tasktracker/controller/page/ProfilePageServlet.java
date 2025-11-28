@@ -23,8 +23,8 @@ public class ProfilePageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String username = (String) req.getAttribute("username");
-        UserProfileDto user = userService.findByUsername(username);
+        UserProfileDto user = (UserProfileDto) req.getAttribute("user");
+        user = userService.findByUsername(user.username());
         req.setAttribute("user", user);
         req.getRequestDispatcher("/profile.jsp").forward(req, resp);
     }

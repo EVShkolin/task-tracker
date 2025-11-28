@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.dto.user.UserCreateDto;
+import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.security.CookieManager;
 import ru.kpfu.tasktracker.security.JwtProvider;
 import ru.kpfu.tasktracker.service.UserService;
 
@@ -32,17 +34,13 @@ public class LoginPageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserCreateDto dto = new UserCreateDto(req.getParameter("username"), req.getParameter("password"));
-
-        if (userService.authenticate(dto)) {
-            String token = JwtProvider.generateToken(dto.username());
-            Cookie cookie = new Cookie("jwt", token);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(10 * 60);
-            cookie.setPath("/");
-            resp.addCookie(cookie);
-            resp.sendRedirect(req.getContextPath() + "/home");
-        } else {
+        if (!userService.authenticate(dto)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
+        UserProfileDto user = userService.findByUsername(dto.username());
+        Cookie cookie = CookieManager.getCookieWithJwt(user);
+        resp.addCookie(cookie);
+        resp.sendRedirect(req.getContextPath() + "/home");
     }
 }

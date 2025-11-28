@@ -9,6 +9,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.controller.validator.CommentValidator;
 import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.mapper.*;
@@ -29,6 +30,9 @@ public class ApplicationContext implements ServletContextListener {
         ServletContext context = sce.getServletContext();
         addCommonDependenciesToContext(context);
 
+        CommentRepository commentRepository = new CommentRepository(dataSource);
+        CommentService commentService = new CommentService(commentRepository, new CommentMapper());
+
         ProjectMemberService projectMemberService = new ProjectMemberService(
                 new ProjectMemberRepository(dataSource),
                 new ProjectMemberMapper()
@@ -45,6 +49,7 @@ public class ApplicationContext implements ServletContextListener {
         TaskService taskService = new TaskService(
                 taskRepository,
                 projectMemberService,
+                commentService,
                 new TaskMapper()
         );
 
@@ -60,16 +65,21 @@ public class ApplicationContext implements ServletContextListener {
                 new ProjectMapper()
         );
 
+
+
         context.setAttribute("userService", userService);
         context.setAttribute("projectService", projectService);
         context.setAttribute("projectMemberService", projectMemberService);
         context.setAttribute("taskService", taskService);
         context.setAttribute("kanbanCardService", kanbanCardService);
+        context.setAttribute("commentService", commentService);
 
         UserValidator userValidator = new UserValidator();
         context.setAttribute("userValidator", userValidator);
         ProjectMemberValidator projectMemberValidator = new ProjectMemberValidator();
         context.setAttribute("projectMemberValidator", projectMemberValidator);
+        CommentValidator commentValidator = new CommentValidator();
+        context.setAttribute("commentValidator", commentValidator);
 
         log.info("Application context initialized");
     }

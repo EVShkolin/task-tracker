@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.dto.user.UserCreateDto;
 import ru.kpfu.tasktracker.dto.user.UserProfileDto;
+import ru.kpfu.tasktracker.security.CookieManager;
 import ru.kpfu.tasktracker.security.JwtProvider;
 import ru.kpfu.tasktracker.service.UserService;
 
@@ -39,12 +40,8 @@ public class RegisterPageServlet extends HttpServlet {
         userValidator.validateNewUser(dto);
         UserProfileDto user = userService.save(dto);
 
-        String token = JwtProvider.generateToken(user.username());
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(10 * 60);
-        cookie.setPath("/");
-        resp.addCookie(cookie);
+        Cookie jwtCookie = CookieManager.getCookieWithJwt(user);
+        resp.addCookie(jwtCookie);
         resp.sendRedirect(req.getContextPath() + "/home");
     }
 }

@@ -20,6 +20,7 @@ public class KanbanCardMapper {
                         t.getContent(),
                         t.getCreatedAt(),
                         null,
+                        new ArrayList<>(),
                         new ArrayList<>()
                 )).toList();
 

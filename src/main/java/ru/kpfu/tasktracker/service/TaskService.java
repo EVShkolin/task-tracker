@@ -2,6 +2,7 @@ package ru.kpfu.tasktracker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.kpfu.tasktracker.dto.comment.CommentDto;
 import ru.kpfu.tasktracker.dto.task.TaskDto;
 import ru.kpfu.tasktracker.dto.user.UserProfileDto;
 import ru.kpfu.tasktracker.exception.ObjectNotFoundException;
@@ -19,6 +20,7 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final ProjectMemberService projectMemberService;
+    private final CommentService commentService;
     private final TaskMapper taskMapper;
 
     public TaskDto findById(Long id) {
@@ -26,7 +28,11 @@ public class TaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("task", id));
         List<UserProfileDto> assignees = projectMemberService.findAllByTaskId(task.getId());
-        return taskMapper.toDto(task, assignees);
+        List<CommentDto> comments = commentService.getAllCommentsByTaskId(id);
+        TaskDto dto = taskMapper.toDto(task);
+        dto.setAssignees(assignees);
+        dto.setComments(comments);
+        return dto;
     }
 
     public void addAssignee(Long taskId, Long memberId) {
@@ -50,8 +56,8 @@ public class TaskService {
         log.debug("IN TaskService update task {}", taskDto);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("task", id));
-        task.setTitle(taskDto.title());
-        task.setContent(taskDto.content());
+        task.setTitle(taskDto.getTitle());
+        task.setContent(taskDto.getContent());
         task.setUpdatedAt(Instant.now());
         task = taskRepository.save(task);
         return taskMapper.toDto(task);

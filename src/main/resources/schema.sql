@@ -67,3 +67,14 @@ CREATE TABLE members_tasks (
     FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
 );
 
+CREATE TABLE invitations (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    project_id BIGINT NOT NULL,
+    status VARCHAR(10) NOT NULL CHECK ( status IN ('PENDING', 'ACCEPTED', 'DECLINED') ),
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+);

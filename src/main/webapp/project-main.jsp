@@ -19,7 +19,7 @@
 <header>
   <div class="header">
     <div class="logo">
-      <img class="image" src="https://static.vecteezy.com/system/resources/previews/009/481/029/non_2x/geometric-icon-logo-geometric-abstract-element-free-vector.jpg" alt="Logo"/>
+      <img class="image" src="https://cdn-icons-png.flaticon.com/512/5968/5968875.png" alt="Logo"/>
     </div>
     <div>
       <a class="profile" href="${pageContext.request.contextPath}/profile">
@@ -133,6 +133,7 @@
     const contextPath = '${pageContext.request.contextPath}';
     const projectId = ${project.id};
     const memberId = ${memberId};
+    const projectTitle = ${project.title};
     console.log('ContextPath = ' + contextPath + ' projectId = ' + projectId + ' memberId = ' + memberId);
 
     const members = [

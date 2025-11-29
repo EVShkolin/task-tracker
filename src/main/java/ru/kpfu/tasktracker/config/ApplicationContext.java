@@ -10,6 +10,7 @@ import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.extern.slf4j.Slf4j;
 import ru.kpfu.tasktracker.controller.validator.CommentValidator;
+import ru.kpfu.tasktracker.controller.validator.InvitationValidator;
 import ru.kpfu.tasktracker.controller.validator.ProjectMemberValidator;
 import ru.kpfu.tasktracker.controller.validator.UserValidator;
 import ru.kpfu.tasktracker.mapper.*;
@@ -65,6 +66,11 @@ public class ApplicationContext implements ServletContextListener {
                 new ProjectMapper()
         );
 
+        InvitationService invitationService = new InvitationService(
+                new InvitationRepository(dataSource),
+                new InvitationMapper(),
+                projectMemberService
+        );
 
 
         context.setAttribute("userService", userService);
@@ -73,6 +79,7 @@ public class ApplicationContext implements ServletContextListener {
         context.setAttribute("taskService", taskService);
         context.setAttribute("kanbanCardService", kanbanCardService);
         context.setAttribute("commentService", commentService);
+        context.setAttribute("invitationService", invitationService);
 
         UserValidator userValidator = new UserValidator();
         context.setAttribute("userValidator", userValidator);
@@ -80,6 +87,8 @@ public class ApplicationContext implements ServletContextListener {
         context.setAttribute("projectMemberValidator", projectMemberValidator);
         CommentValidator commentValidator = new CommentValidator();
         context.setAttribute("commentValidator", commentValidator);
+        InvitationValidator invitationValidator = new InvitationValidator();
+        context.setAttribute("invitationValidator", invitationValidator);
 
         log.info("Application context initialized");
     }

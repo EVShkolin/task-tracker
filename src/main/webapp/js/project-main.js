@@ -78,6 +78,30 @@ function addNewTask(data) {
     });
 }
 
+document.getElementById('inviteForm').addEventListener('submit', async function handleInvite(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = {
+        userId: formData.get('user-id'),
+        projectId: projectId,
+        projectTitle: projectTitle
+    };
+
+    const response = await fetch(`${contextPath}/api/v1/invitations`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+        this.reset();
+        alert('Invited successfully')
+    }
+});
+
 
 const deleteButtons = document.querySelectorAll('.delete-task-btn');
 deleteButtons.forEach(button => {

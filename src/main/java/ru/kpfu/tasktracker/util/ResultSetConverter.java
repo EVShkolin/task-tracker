@@ -109,4 +109,18 @@ public class ResultSetConverter {
         );
     }
 
+    public static Invitation convertToInvitation(ResultSet rs) throws SQLException {
+        return new Invitation(
+                rs.getLong("invitation_id"),
+                rs.getLong("user_id"),
+                Project.builder()
+                        .id(rs.getLong("project_id"))
+                        .title(rs.getString("title"))
+                        .build(),
+                Status.valueOf(rs.getString("status")),
+                rs.getTimestamp("created_at").toInstant(),
+                rs.getTimestamp("updated_at").toInstant()
+        );
+    }
+
 }

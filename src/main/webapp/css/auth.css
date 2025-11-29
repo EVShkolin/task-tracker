@@ -1,0 +1,126 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0d1117;
+    color: #f0f6fc;
+    padding: 20px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form {
+    background-color: #161b22;
+    border: 1px solid #3d444d;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.page-type {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #f0f6fc;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #f0f6fc;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    background: #0d1117;
+    border: 1px solid #3d444d;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+    color: #f0f6fc;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #1f6feb;
+    box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.2);
+}
+
+.input::placeholder {
+    color: #6e7681;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.checkbox-container label {
+    margin-bottom: 0;
+    font-size: 0.9em;
+    color: #8b949e;
+}
+
+.checkbox {
+    width: auto;
+    transform: scale(1.2);
+}
+
+.form__submit-button {
+    background-color: #238636;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form__submit-button:hover {
+    background-color: #2ea043;
+}
+
+.sign-up {
+    color: #58a6ff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.sign-up:hover {
+    text-decoration: underline;
+}
+
+p {
+    text-align: center;
+    margin-top: 20px;
+    color: #8b949e;
+}

@@ -26,6 +26,7 @@ public class HomePageServlet extends HttpServlet {
         UserProfileDto userData = (UserProfileDto) req.getAttribute("user");
         UserDto user = userService.findByUsernameWithProjects(userData.username());
         req.setAttribute("user", user);
+        System.out.println("=========== " + user);
         req.getRequestDispatcher("index.jsp").forward(req, resp);
     }
 }

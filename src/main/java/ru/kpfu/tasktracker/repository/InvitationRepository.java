@@ -76,12 +76,14 @@ public class InvitationRepository {
     }
 
     private Invitation insert(Invitation invitation) {
-        String query = "INSERT INTO invitations (user_id, project_id, status) VALUES (?, ?, ?)";
+        String query = "INSERT INTO invitations (user_id, project_id, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, invitation.getUserId());
             ps.setLong(2, invitation.getProject().getId());
             ps.setString(3, invitation.getStatus().name());
+            ps.setTimestamp(4, Timestamp.from(invitation.getCreatedAt()));
+            ps.setTimestamp(5, Timestamp.from(invitation.getUpdatedAt()));
             ps.executeUpdate();
 
             ResultSet generatedKeys = ps.getGeneratedKeys();

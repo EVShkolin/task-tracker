@@ -18,9 +18,9 @@
 <body>
 <header>
   <div class="header">
-    <div class="logo">
+    <a class="logo" href="${pageContext.request.contextPath}/home">
       <img class="image" src="https://cdn-icons-png.flaticon.com/512/5968/5968875.png" alt="Logo"/>
-    </div>
+    </a>
     <div>
       <a class="profile" href="${pageContext.request.contextPath}/profile">
         <img class="image" src="https://static.vecteezy.com/system/resources/thumbnails/032/176/191/small/business-avatar-profile-black-icon-man-of-user-symbol-in-trendy-flat-style-isolated-on-male-profile-people-diverse-face-for-social-network-or-web-vector.jpg" alt="Profile">
@@ -60,6 +60,7 @@
     <div class="account-management-buttons">
       <button id="change-username-btn" class="btn btn-secondary">Change Username</button>
       <button id="change-password-btn" class="btn btn-secondary">Change Password</button>
+      <a class="btn btn-secondary" href="${pageContext.request.contextPath}/logout">Logout</a>
       <button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
     </div>
   </section>
@@ -166,9 +167,8 @@
 <script>
     const contextPath = '${pageContext.request.contextPath}';
     const userId = ${user.id};
-
-
 </script>
+
 <script src="${pageContext.request.contextPath}/js/profile.js"></script>
 </body>
 </html>

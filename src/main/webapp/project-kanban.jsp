@@ -17,9 +17,9 @@
 <body>
 <header>
   <div class="header">
-    <div class="logo">
+    <a class="logo" href="${pageContext.request.contextPath}/home">
       <img class="image" src="https://cdn-icons-png.flaticon.com/512/5968/5968875.png" alt="Logo"/>
-    </div>
+    </a>
     <div>
       <a class="profile" href="${pageContext.request.contextPath}/profile">
         <img class="image" src="https://static.vecteezy.com/system/resources/thumbnails/032/176/191/small/business-avatar-profile-black-icon-man-of-user-symbol-in-trendy-flat-style-isolated-on-male-profile-people-diverse-face-for-social-network-or-web-vector.jpg" alt="Profile">

@@ -88,6 +88,8 @@ document.getElementById('inviteForm').addEventListener('submit', async function 
         projectTitle: projectTitle
     };
 
+    console.log(data.projectTitle, data.projectId, data.userId);
+
     const response = await fetch(`${contextPath}/api/v1/invitations`, {
         method: 'POST',
         headers: {
